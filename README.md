@@ -1,2 +1,2 @@
 # EPO2
-Epo2 gang
+Epo-2 Vhdl source files
