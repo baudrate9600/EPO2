@@ -1,2 +1,2 @@
 # EPO2
-Epo-2 Vhdl source files
+VHDL code for EPO-2 
