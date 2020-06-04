@@ -11,9 +11,6 @@ entity robot is
 
 		mine_sensor	: in	std_logic;
 
-		write_data	: out std_logic; 
-		read_data	: out std_logic;  
-		new_data	: in std_logic;
 		data_out	: in std_logic_vector(7 downto 0);
 		data_in		: out std_logic_vector(7 downto 0);
 
@@ -32,9 +29,6 @@ architecture structural of robot is
 			sensor_r		: in	std_logic;
 			mine_detect		: in	std_logic;
 
-			write_data		: out std_logic; 
-			read_data		: out std_logic;  
-			new_data		: in std_logic;
 			data_out		: in std_logic_vector(7 downto 0);
 			data_in			: out std_logic_vector(7 downto 0);
 
@@ -130,10 +124,7 @@ L4: controller port map (	clk=>clk,
 				motor_l_direction=>motor_l_directions,
 				motor_r_direction=>motor_r_directions,
 				data_out=>data_out,
-				data_in=>data_in,
-				write_data=>write_data,
-				read_data=>read_data,
-				new_data=>new_data			
+				data_in=>data_in				
 			 );
 L5: motorcontrol port map (	clk=>clk,
 				reset=>motor_l_resets,

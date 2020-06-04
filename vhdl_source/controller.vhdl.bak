@@ -12,10 +12,7 @@ entity controller is
 		sensor_r : in std_logic;
 
 		mine_detect: in std_logic;
-
-		write_data: out std_logic; 
-		read_data: out std_logic;  
-		new_data: in std_logic;
+		
 		data_out: in std_logic_vector(7 downto 0);
 		data_in: out std_logic_vector(7 downto 0);
 
