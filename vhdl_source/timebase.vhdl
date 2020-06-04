@@ -1,43 +1,58 @@
---Author: Olasoji Makinwa 
---date: 14/3/2020
---description: 
---This program  counts to 2^20 enough to store 1 milion counts 
--- which allows the fpga to track a period of atleast 20ms 
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+
 entity timebase is
-  port (
-    clk : in std_logic;             
-    reset : in std_logic;
-    count_out : out std_logic_vector (19 downto 0)
-  ) ;
-end timebase;
+	port (	clk		: in	std_logic;
+		reset		: in	std_logic;
 
-architecture behav of timebase is
+		count_out	: out	std_logic_vector (19 downto 0)
+	);
+end entity timebase;
 
-    signal counter : unsigned (19 downto 0);   --Counter needs to count to atleast 1M , so atleast 20 bits are needed 
+architecture behaviour of timebase is
+signal count, new_count: unsigned (19 downto 0);
 
 begin
-    counter_process : process( clk, reset )
-    begin
-        --Every rising edge increment the counter 
-        if (rising_edge(clk)) then 
-            --Reset the counter to zero
-            if (reset = '1' )then
-                counter <= (others => '0');
-            else 
-            --Counter resets after reaching the max value
-                counter <= counter +  1;
-            end if;
-        end if; 
-    
+	process(clk,reset)
+	begin
+		if (clk'event and clk='1') then
+			if (reset='1') then
+				count <= (others => '0');
+			else
+				count <= new_count;
+			end if;
+		end if;
+	end process;
+	
+	process(count)
+	begin
+			new_count <= count + 1;
+	end process;
+	count_out <= std_logic_vector (count);
+end behaviour;
+ 
+library IEEE;
+use IEEE.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-        
-    end process ; -- counter_process
+entity timebase_tb is
+end entity timebase_tb;
 
-    --Assign the value to the output 
-    count_out <= std_logic_vector (counter);
-end behav ; -- behav
+architecture structural of timebase_tb is
+	component timebase is
+		port (	clk		: in	std_logic;
+			reset		: in	std_logic;
 
+			count_out	: out	std_logic_vector (19 downto 0)
+		);
+	end component;
+	signal clk, reset: std_logic;
+	signal count_out: std_logic_vector (19 downto 0);
+begin
+	clk <= '0' after 0 ns, '1' after 10 ns when clk/= '1' else '0' after 10 ns;
+	reset <= '1' after 0 ns, '0' after 11 ns;
+L1: timebase port map (clk=>clk, reset=>reset, count_out=>count_out);
+
+end structural;
