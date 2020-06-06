@@ -26,7 +26,7 @@ architecture controller_behav of controller is
 type diff_states is (Startturn,Sensor_check,Wait_for_line,Startrigth,Goforward,Startleft);
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
-signal mine : std_logic; -- using for being in state mine_detect.
+signal mine : std_logic; 			-- using for being in state mine_detect.
 signal motorreset: std_logic;
 signal reset_l_motor, reset_r_motor: std_logic;
 signal direction : std_logic;			-- direction=0 for left turn, direction=1 for rigth turn
