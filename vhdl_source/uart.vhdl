@@ -56,9 +56,7 @@ end component;
 signal s_tick_buf, rx_done_tick_buf, tx_done_tick, flag_buf_tx, tx_done_tick_buf: std_logic;
 signal dout_rx, din_tx : std_logic_vector(7 downto 0);
 begin
---U1: uart_rx port map (clk => clk, reset=> reset, 
---rx=>rx,
---s_tick=> s_tick_buf, rx_done_tick=> rx_done_tick_buf, dout=> dout_rx);
+--U1: uart_rx port map (clk => clk, reset=> reset, rx=>rx,s_tick=> s_tick_buf, rx_done_tick=> rx_done_tick_buf, dout=> dout_rx);
 U2: uart_tx port map (clk=> clk, reset=> reset, tx_start=> flag_buf_tx, s_tick => s_tick_buf, din => din_tx, tx_done_tick=> tx_done_tick_buf, tx=> tx);
 U3rx: buf_reg port map(clk=>clk, reset=> reset, clr_flag=> read_data, set_flag=>rx_done_tick_buf, din=> dout_rx, dout=>data_out, flag =>new_data);
 U4tx: buf_reg port map (clk=> clk, reset=> reset, clr_flag=> tx_done_tick_buf, set_flag => write_data, din=> data_in, dout=> din_tx, flag=> flag_buf_tx);
