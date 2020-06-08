@@ -16,8 +16,8 @@ entity controller is
 		write_data: out std_logic; 
 		read_data: out std_logic;  
 		new_data: in std_logic;
-		data_received: in std_logic_vector(7 downto 0);
-		data_send: out std_logic_vector(7 downto 0);
+		data_out: in std_logic_vector(7 downto 0);
+		data_in: out std_logic_vector(7 downto 0);
 
 		count_in : in std_logic_vector (19 downto 0);
 		count_reset : out std_logic;

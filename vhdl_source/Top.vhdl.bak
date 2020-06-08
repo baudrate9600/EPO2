@@ -11,7 +11,7 @@ entity top is
 
 		mine_sensor	: in	std_logic;
 		
---		rx		: in std_logic;
+		rx		: in std_logic;
 		tx		: out std_logic;
 
 		motor_l_pwm     : out   std_logic;
@@ -23,7 +23,7 @@ architecture structural of top is
 	component uart is
 		port (
 			clk, reset	: in std_logic;
---			rx		: in std_logic; -- input bit stream
+			rx		: in std_logic; -- input bit stream
 			tx		: out std_logic; -- output bit stream
 			data_in		: in std_logic_vector(7 downto 0); -- byte to be sent
 			data_out	: out std_logic_vector(7 downto 0); -- received byte
@@ -59,7 +59,7 @@ begin
 
 L1: uart port map(	clk=>clk,
 			reset=>reset,
---			rx=>rx,
+			rx=>rx,
 			tx=>tx,
 			data_in=>data_in_sig,
 			data_out=>data_out_sig,
