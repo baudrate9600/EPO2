@@ -46,8 +46,8 @@ architecture structural of top is
 			write_data	: out std_logic; 
 			read_data	: out std_logic;  
 			new_data	: in std_logic;
-			data_out	: in std_logic_vector(7 downto 0);
-			data_in		: out std_logic_vector(7 downto 0);
+			data_received	: in std_logic_vector(7 downto 0);
+			data_send	: out std_logic_vector(7 downto 0);
 
 			motor_l_pwm     : out   std_logic;
 			motor_r_pwm     : out   std_logic
@@ -75,8 +75,8 @@ L2: robot port map(	clk=>clk,
 			mine_sensor =>mine_sensor,
 			motor_r_pwm=>motor_r_pwm,
 			motor_l_pwm=>motor_l_pwm,
-			data_in=>data_in_sig,
-			data_out=>data_out_sig,
+			data_send=>data_in_sig,
+			data_received=>data_out_sig,
 			write_data=>write_data_sig,
 			read_data=>read_data_sig,
 			new_data=>new_data_sig

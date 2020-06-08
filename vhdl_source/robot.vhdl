@@ -14,8 +14,8 @@ entity robot is
 		write_data	: out std_logic; 
 		read_data	: out std_logic;  
 		new_data	: in std_logic;
-		data_out	: in std_logic_vector(7 downto 0);
-		data_in		: out std_logic_vector(7 downto 0);
+		data_received	: in std_logic_vector(7 downto 0);
+		data_send	: out std_logic_vector(7 downto 0);
 
 		motor_l_pwm     : out   std_logic;
 		motor_r_pwm     : out   std_logic
@@ -36,7 +36,7 @@ architecture structural of robot is
 			read_data		: out std_logic;  
 			new_data		: in std_logic;
 			data_received		: in std_logic_vector(7 downto 0);
-			data_send			: out std_logic_vector(7 downto 0);
+			data_send		: out std_logic_vector(7 downto 0);
 
 			count_in		: in	std_logic_vector (19 downto 0);
 			count_reset		: out	std_logic;
@@ -129,8 +129,8 @@ L4: controller port map (	clk=>clk,
 				motor_r_reset=>motor_r_resets,
 				motor_l_direction=>motor_l_directions,
 				motor_r_direction=>motor_r_directions,
-				data_received=>data_out,
-				data_send=>data_in,
+				data_received=>data_received,
+				data_send=>data_send,
 				write_data=>write_data,
 				read_data=>read_data,
 				new_data=>new_data			

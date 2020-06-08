@@ -75,8 +75,8 @@ begin
 					reset_l_motor <= '1';
 					reset_r_motor <= '1';
 					read_data <= '0';
-					data_send <= "01101101";
 					write_data <= '1';
+					data_send <= "01101101";
 					next_state <= Sensor_check;
 				when Sensor_check=>
 					if (sensor="000") then
