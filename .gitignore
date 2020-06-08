@@ -1,0 +1,2 @@
+#ignore back up files from modelsim
+*.vhdl.bak
