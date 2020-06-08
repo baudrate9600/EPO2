@@ -31,7 +31,7 @@ entity controller is
 end entity controller;
 
 architecture controller_behav of controller is
-	type diff_states is (Startturn,Sensor_check,Wait_for_line);
+	type diff_states is (Startturn,Sensor_check,Wait_for_line,Mine_signal);
 	signal state, next_state: diff_states;
 	signal sensor: std_logic_vector(2 downto 0); 
 	signal mine : std_logic; -- using for being in state mine_detect.
@@ -41,6 +41,9 @@ begin
 	sensor(2)<=sensor_l;
 	sensor(1)<=sensor_m;
 	sensor(0)<=sensor_r;
+	data_send <= "11111111";
+	read_data <= '1';
+	write_data <= '0';
 
 	ttl:process(sensor,state,mine_detect)
   	begin
@@ -53,16 +56,27 @@ begin
 					if(sensor="111") then
 						next_state <= Wait_for_line;
 					else 
-						next_state<=Startturn;
+						next_state <= Startturn;
 					end if;
 				when Wait_for_line =>
 					motor_l_direction <= '1';
 					motor_r_direction <= '1';
+					reset_l_motor <= '0';
+					reset_r_motor <= '0';
 					if(sensor="110") then
-						next_state <= Sensor_check;
+						next_state <= Mine_signal;
 					else 
 						next_state <= Wait_for_line;
 					end if;
+				when Mine_signal =>
+					motor_l_direction <= '1';
+					motor_r_direction <= '1';
+					reset_l_motor <= '1';
+					reset_r_motor <= '1';
+					read_data <= '0';
+					data_send <= "01101101";
+					write_data <= '1';
+					next_state <= Sensor_check;
 				when Sensor_check=>
 					if (sensor="000") then
 						motor_l_direction <= '1';
@@ -132,9 +146,9 @@ begin
     			count_reset <= '1';
     			motorreset <= '1';
     			state<=Sensor_check;
-    		elsif (clk'event and clk='1') then
+    		elsif (clk'event and clk = '1') then
 			state<=next_state;
-        		if (unsigned(count_in) =1000000) then
+        		if (unsigned(count_in) = 1000000) then
       				count_reset <= '1';
       				motorreset <= '1';
     			else
