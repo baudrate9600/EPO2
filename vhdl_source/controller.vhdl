@@ -14,6 +14,13 @@ mine_detect: in std_logic;
 count_in : in std_logic_vector (19 downto 0);
 count_reset : out std_logic;
 
+write_data		: out std_logic; 
+read_data		: out std_logic;  
+new_data		: in std_logic;
+data_out		: in std_logic_vector(7 downto 0);
+data_in			: out std_logic_vector(7 downto 0);
+
+
 motor_l_reset : out std_logic;
 motor_l_direction : out std_logic;
 
@@ -24,11 +31,11 @@ end entity controller;
 
 architecture controller_behav of controller is
 type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,Process_character,left,right,foward);
-signal usart_state : usart_states;
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
 signal motorreset: std_logic;
+signal pulse_counter : integer range 0 to 5;
 signal reset_l_motor, reset_r_motor: std_logic;
 
 
@@ -62,18 +69,52 @@ when Wait_for_line =>
     end if;
 when Check_point =>
     if(new_data = '1') then
-      next_state <= Process_character; 
+      next_state <= foward; 
     else 
       next_state <= Check_point; 
     end if; 
 when Process_character => 
-    if data_out = X"108" then 
-      next_state = left;
-    elsif data_out = X"114" then 
-      next_state = right; 
-    elsif data_out = X"102" then 
-     next_state = foward; 
+    pulse_counter <= 0;
+    if data_out = X"108" then    --'l'
+      next_state <= left;
+    elsif data_out = X"114" then --'r' 
+      next_state <= right; 
+    elsif data_out = X"102" then --'f'
+     next_state <= Sensor_check; 
    end  if; 
+when foward => 
+      motor_l_direction <= '1';
+			motor_r_direction <= '0';
+			reset_l_motor <= '0';
+      reset_r_motor <= '0';
+      if count_reset = '1' then 
+        if(pulse_counter = 5) then 
+            next_state <= Process_character;
+        else 
+            next_state <= foward_state2;
+        end if;
+      end if; 
+when foward_state2 => 
+      if(count_reset = '0') then 
+        next_state <= foward_state; 
+      end if; 
+when left => 
+      motor_l_direction <= '1';
+			motor_r_direction <= '1';
+			reset_l_motor <= '0';
+      reset_r_motor <= '0';
+      if(sensor = "111") then 
+        next_state <= Wait_for_line;
+      end if; 
+
+when right => 
+      motor_l_direction <= '0'; 
+      motor_l_direction <= '0'; 
+      reset_l_motor <= '0'; 
+      reset_l_motor <= '0'; 
+      if(sensor = "111") then 
+        next_state <= Wait_for_line; 
+      end if;
 when Sensor_check=>
     --All black ( checkpoint) 
     if (sensor="000") then
