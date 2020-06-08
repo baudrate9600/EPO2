@@ -84,8 +84,10 @@ when foward =>
       reset_r_motor <= '0';
       if (unsigned(count_in) =1000000) then 
         if(pulse_counter = 5) then 
+	    pulse_counter <= 0;
             next_state <= Process_character;
         else 
+	    pulse_counter <= pulse_counter + 1;
             next_state <= foward_state2;
         end if;
       end if;
