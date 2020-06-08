@@ -30,7 +30,7 @@ motor_r_direction : out std_logic
 end entity controller;
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,Process_character,left,right,foward);
+type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,Process_character,left,right,foward,foward_state2);
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
@@ -67,12 +67,34 @@ when Wait_for_line =>
     else 
       next_state <= Wait_for_line;
     end if;
-when Check_point =>
+
+--When the checkpoint has been reached wait until new_data arrives from the uart and then go foward 
+when Check_point => 
     if(new_data = '1') then
       next_state <= foward; 
     else 
       next_state <= Check_point; 
     end if; 
+
+--Go foward for 5 pulses then process the character that was sent from the uart 
+when foward => 
+      motor_l_direction <= '1';
+			motor_r_direction <= '0';
+			reset_l_motor <= '0';
+      reset_r_motor <= '0';
+      if (unsigned(count_in) =1000000) then 
+        if(pulse_counter = 5) then 
+            next_state <= Process_character;
+        else 
+            next_state <= foward_state2;
+        end if;
+      end if;
+--Wait until the counter has reset  
+when foward_state2 => 
+      if((unsigned(count_in) =0)) then 
+        next_state <= foward; 
+      end if; 
+--Process the revieced character. 
 when Process_character => 
     pulse_counter <= 0;
     if data_out = X"108" then    --'l'
@@ -82,22 +104,6 @@ when Process_character =>
     elsif data_out = X"102" then --'f'
      next_state <= Sensor_check; 
    end  if; 
-when foward => 
-      motor_l_direction <= '1';
-			motor_r_direction <= '0';
-			reset_l_motor <= '0';
-      reset_r_motor <= '0';
-      if count_reset = '1' then 
-        if(pulse_counter = 5) then 
-            next_state <= Process_character;
-        else 
-            next_state <= foward_state2;
-        end if;
-      end if; 
-when foward_state2 => 
-      if(count_reset = '0') then 
-        next_state <= foward_state; 
-      end if; 
 when left => 
       motor_l_direction <= '1';
 			motor_r_direction <= '1';
