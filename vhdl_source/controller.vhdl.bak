@@ -30,7 +30,7 @@ signal mine : std_logic; 			-- using for being in state mine_detect.
 signal motorreset: std_logic;
 signal reset_l_motor, reset_r_motor: std_logic;
 signal direction : std_logic;			-- direction=0 for left turn, direction=1 for rigth turn
-signal round : std_logic_vector(2 downto 0);
+signal rounds : std_logic_vector(2 downto 0);
 signal new_round : std_logic_vector(2 downto 0);
 begin
 sensor(2)<=sensor_l;
@@ -40,7 +40,7 @@ ttl:process(sensor,state,mine_detect)
   begin
 	case state is
 		when Startturn =>
-			new_round <= round;
+			new_round <= rounds;
 			motor_l_direction <= '1';
 			motor_r_direction <= '1';
 			reset_l_motor <= '0';
@@ -50,7 +50,7 @@ ttl:process(sensor,state,mine_detect)
 			else next_state<=Startturn;
 			end if;
 		when Wait_for_line =>
-			new_round <= round;
+			new_round <= rounds;
 			if(direction='1') then
 				motor_l_direction <= '1';
 				motor_r_direction <= '1';
@@ -71,7 +71,7 @@ ttl:process(sensor,state,mine_detect)
 				end if;
 			end if;
 		when StartRigth =>
-			new_round <= round;
+			new_round <= rounds;
 			motor_l_direction <= '1';
 			motor_r_direction <= '1';
 			reset_l_motor <= '0';
@@ -82,7 +82,7 @@ ttl:process(sensor,state,mine_detect)
 			else next_state <= StartRigth;
 			end if;
 		when StartLeft =>
-			new_round <= round;
+			new_round <= rounds;
 			motor_l_direction <= '0';
 			motor_r_direction <= '0';
 			reset_l_motor <= '0';
@@ -98,7 +98,7 @@ ttl:process(sensor,state,mine_detect)
 			reset_l_motor <= '0';
 			reset_r_motor <= '0';
 			if(unsigned(count_in)=1000000) then
-				if(unsigned(round)=5) then
+				if(unsigned(rounds)=5) then
 					if (--uart=r) then
 						next_state <= StartRigth;
 					else if (--uart=f) then
@@ -112,10 +112,10 @@ ttl:process(sensor,state,mine_detect)
 				end if;
 			else
 				next_state <= Goforward;
-				new_round <= round;
+				new_round <= rounds;
 			end if;
 		when Sensor_check=>
-			new_round <= round;
+			new_round <= rounds;
 			if (sensor="000") then
 				motor_l_direction <= '1';
 			        motor_r_direction <= '0';
@@ -189,6 +189,7 @@ if (reset='1') then
     state<=Sensor_check;
     elsif (clk'event and clk='1') then
 state<=next_state;
+rounds <= new_round;
         if (unsigned(count_in) =1000000) then
       count_reset <= '1';
       motorreset <= '1';

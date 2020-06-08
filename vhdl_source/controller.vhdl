@@ -11,6 +11,13 @@ sensor_l : in std_logic;
 sensor_m : in std_logic;
 sensor_r : in std_logic;
 mine_detect: in std_logic;
+
+write_data: out std_logic; 
+read_data: out std_logic;  
+new_data: in std_logic;
+data_received: in std_logic_vector(7 downto 0);
+data_send: out std_logic_vector(7 downto 0);
+
 count_in : in std_logic_vector (19 downto 0);
 count_reset : out std_logic;
 
@@ -99,11 +106,11 @@ ttl:process(sensor,state,mine_detect)
 			reset_r_motor <= '0';
 			if(unsigned(count_in)=1000000) then
 				if(unsigned(rounds)=5) then
-					if (--uart=r) then
+					if (data_out = X"114") then
 						next_state <= StartRigth;
-					else if (--uart=f) then
+					else if (data_out = X"102") then
 						next_state <= Sensor_check;
-					else if (--uart=l) then 
+					else if (data_out = X"108") then 
 						next_state <= StartLeft;
 					end if;
 					new_round <= "000";
@@ -174,7 +181,7 @@ ttl:process(sensor,state,mine_detect)
 			if(mine_detect='1') then
 				direction<= '1';
 				next_state<=Startturn;
-			else if(--uart'event) then
+			else if(data_out'event) then
 				next_state<=Goforward;
 			else
 				next_state<=Sensor_check;
