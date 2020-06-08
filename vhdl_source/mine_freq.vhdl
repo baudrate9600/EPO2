@@ -13,85 +13,51 @@ end entity mine_freq;
 
 architecture behaviour of mine_freq is
 
-	type mine_state is ( 	mine,
-				no_mine,
-				reset_mine,
-				count_mine,
-				count_no_mine,
-				count_reset_mine,
-				count_reset_no_mine
+	type mine_state is ( 	
+				reset_state,
+				wait_for_high, 
+				count_high
 				);
 	signal state, new_state : mine_state;
 	signal mine_count, new_mine_count	: unsigned(19 downto 0);
 
 begin
-	process (clk)
+	process (reset,clk)
 	begin
-		if (clk'event and clk = '1') then
-			if (reset = '1') then
-				state <= reset_mine; 
-			else
-				state <= new_state;
-			end if ;
-		end if ;
+		if reset = '1' then 
+		
+			state <= reset_state; 
+		 
+		elsif rising_edge(clk) then 
+			state <= new_state;	
+			new_mine_count <= mine_count + 1;
+		end if; 
 	end process ;
 
-	process (state, mine_sensor, clk)
+	process (state, mine_sensor,new_mine_count)
 	begin
 		case state is
-			when reset_mine =>
+			when reset_state => 
 				mine_count <= (others => '0');
 				mine_detect <= '0';
-				new_state <=	count_no_mine;
-			when count_no_mine =>
-				mine_count <= new_mine_count;
-				mine_detect <= '0';
-				if (mine_sensor = '1' and unsigned(mine_count) > 5000) then
-					new_state <=	mine;
-				elsif (mine_sensor = '1' and unsigned(mine_count) <= 5000) then
-					new_state <=	no_mine;
-				else
-					new_state <=	count_no_mine;
-				end if;
-			when count_mine =>
-				mine_count <= new_mine_count;
-				mine_detect <= '1';
-				if (mine_sensor = '1' and unsigned(mine_count) > 5000) then
-					new_state <=	mine;
-				elsif (mine_sensor = '1' and unsigned(mine_count) <= 5000) then
-					new_state <=	no_mine;
-				else
-					new_state <=	count_mine;
-				end if;
-			when no_mine =>
-				mine_detect <= '0';
-				if (mine_sensor ='0') then
+				new_state <= wait_for_high;
+			when wait_for_high =>
+				if mine_sensor = '1' then 
 					mine_count <= (others => '0');
-					new_state <= count_reset_no_mine;
-				else
-					new_state <=	no_mine;
-				end if;
-			when count_reset_no_mine =>
-				mine_detect <= '0';
-				mine_count <= (others => '0');
-				new_state <=	count_no_mine;
-			when mine =>
-				mine_detect <= '1';
-				if (mine_sensor ='0') then
-					mine_count <= (others => '0');
-					new_state <= count_reset_mine;
-				else
-					new_state <=	mine;
-				end if;
-			when count_reset_mine =>
-				mine_detect <= '1';
-				mine_count <= (others => '0');
-				new_state <=	count_mine;
+					new_state <= count_high; 
+				end if; 
+			when count_high => 
+				mine_count <= new_mine_count;
+				if mine_sensor = '0' then 
+					if (unsigned(mine_count) < 2500) then 
+						mine_detect <= '0'; 
+					else  
+						mine_detect <= '1'; 
+					end if; 
+					new_state <= wait_for_high;
+				end if; 
 		end case;
 	end process;
 
-	process(mine_count)
-	begin
-		new_mine_count <= mine_count + 1;
-	end process;
+	
 end architecture behaviour;
