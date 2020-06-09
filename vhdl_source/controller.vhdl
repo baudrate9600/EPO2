@@ -36,7 +36,7 @@ signal sensor: std_logic_vector(2 downto 0);
 signal mine : std_logic; 			-- using for being in state mine_detect.
 signal motorreset: std_logic;
 signal reset_l_motor, reset_r_motor: std_logic;
-signal direction : std_logic;			-- direction=0 for left turn, direction=1 for rigth turn
+--signal direction : std_logic;			-- direction=0 for left turn, direction=1 for rigth turn
 signal rounds : std_logic_vector(2 downto 0);
 signal new_round : std_logic_vector(2 downto 0);
 begin
@@ -58,7 +58,7 @@ ttl:process(sensor,state,mine_detect)
 			end if;
 		when Wait_for_line =>
 			new_round <= rounds;
-			if(direction='1') then
+			--if(direction='1') then
 				motor_l_direction <= '1';
 				motor_r_direction <= '1';
 				reset_l_motor <= '0';
@@ -67,16 +67,16 @@ ttl:process(sensor,state,mine_detect)
 					next_state <= Sensor_check;
 				else next_state <= Wait_for_line;
 				end if;
-			else
-				motor_l_direction <= '0';
-				motor_r_direction <= '0';
-				reset_l_motor <= '0';
-				reset_r_motor <= '0';
-				if(sensor="011") then
-					next_state <= Sensor_check;
-				else next_state <= Wait_for_line;
-				end if;
-			end if;
+			--else
+				--motor_l_direction <= '0';
+				--motor_r_direction <= '0';
+				--reset_l_motor <= '0';
+				--reset_r_motor <= '0';
+				--if(sensor="011") then
+				--	next_state <= Sensor_check;
+				--else next_state <= Wait_for_line;
+				--end if;
+			--end if;
 		when StartRigth =>
 			new_round <= rounds;
 			motor_l_direction <= '1';
@@ -88,16 +88,16 @@ ttl:process(sensor,state,mine_detect)
 				next_state <= Wait_for_line;
 			else next_state <= StartRigth;
 			end if;
-		when StartLeft =>
-			new_round <= rounds;
-			motor_l_direction <= '0';
-			motor_r_direction <= '0';
-			reset_l_motor <= '0';
-			reset_r_motor <= '0';
-			direction<= '0';
-			if(sensor="111") then
-				next_state <= Wait_for_line;
-			else next_state <= StartLeft;
+--		when StartLeft =>
+--			new_round <= rounds;
+--			motor_l_direction <= '0';
+--			motor_r_direction <= '0';
+--			reset_l_motor <= '0';
+--			reset_r_motor <= '0';
+--			direction<= '0';
+--			if(sensor="111") then
+--				next_state <= Wait_for_line;
+--			else next_state <= StartLeft;
 			
 		when Goforward =>
 			motor_l_direction <= '1';
@@ -181,7 +181,7 @@ ttl:process(sensor,state,mine_detect)
 			if(mine_detect='1') then
 				direction<= '1';
 				next_state<=Startturn;
-			else if(data_out'event) then
+			else if(rising_edge(read_data)) then
 				next_state<=Goforward;
 			else
 				next_state<=Sensor_check;
