@@ -4,6 +4,7 @@ use IEEE.numeric_std.all;
 use IEEE.std_logic_1164.all;
 
 entity controller is
+
 	port ( clk : in std_logic;
 		reset : in std_logic;
 
@@ -31,7 +32,7 @@ entity controller is
 end entity controller;
 
 architecture controller_behav of controller is
-	type diff_states is (Startturn,Sensor_check,Wait_for_line,Mine_signal);
+	type diff_states is (Startturn,Sensor_check,Wait_for_line,Mine_revert,Mine_send);
 	signal state, next_state: diff_states;
 	signal sensor: std_logic_vector(2 downto 0); 
 	signal mine : std_logic; -- using for being in state mine_detect.
@@ -41,11 +42,8 @@ begin
 	sensor(2)<=sensor_l;
 	sensor(1)<=sensor_m;
 	sensor(0)<=sensor_r;
-	data_send <= "11111111";
-	read_data <= '1';
-	write_data <= '0';
 
-	ttl:process(sensor,state,mine_detect)
+	ttl:process(sensor,state,mine_detect, count_in)
   	begin
 			case state is
 				when Startturn =>
@@ -53,6 +51,9 @@ begin
 					motor_r_direction <= '1';
 					reset_l_motor <= '0';
 					reset_r_motor <= '0';
+					read_data <= '1';
+					write_data <= '0';
+					data_send <= "11111111";
 					if(sensor="111") then
 						next_state <= Wait_for_line;
 					else 
@@ -63,21 +64,37 @@ begin
 					motor_r_direction <= '1';
 					reset_l_motor <= '0';
 					reset_r_motor <= '0';
+					read_data <= '1';
+					write_data <= '0';
+					data_send <= "11111111";
 					if(sensor="110") then
-						next_state <= Mine_signal;
+						next_state <= Mine_revert;
 					else 
 						next_state <= Wait_for_line;
 					end if;
-				when Mine_signal =>
+				when Mine_revert =>
 					motor_l_direction <= '1';
 					motor_r_direction <= '1';
-					reset_l_motor <= '1';
-					reset_r_motor <= '1';
-					read_data <= '0';
-					data_send <= "01101101";
+					reset_l_motor <= '0';
+					reset_r_motor <= '0';
+					if (unsigned(count_in) = 0) then
+						next_state <= Mine_send;
+					else
+						next_state <= Mine_revert;
+    					end if;
+				when Mine_send =>
+					motor_l_direction <= '1';
+					motor_r_direction <= '1';
+					reset_l_motor <= '0';
+					reset_r_motor <= '0';
+      					read_data <= '0';
 					write_data <= '1';
+					data_send <= "01101101";
 					next_state <= Sensor_check;
 				when Sensor_check=>
+					read_data <= '1';
+					write_data <= '0';
+					data_send <= "11111111";
 					if (sensor="000") then
 						motor_l_direction <= '1';
         					motor_r_direction <= '0';
@@ -160,5 +177,6 @@ begin
 
 	motor_l_reset <= reset_l_motor or motorreset;
 	motor_r_reset <= reset_r_motor or motorreset;
+
 
 end controller_behav;
