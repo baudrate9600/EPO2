@@ -1,0 +1,68 @@
+C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/grouptask2_tb.vhdl {1 {vcom -work work -2002 -explicit -stats=none {C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\grouptask2_tb.vhdl}
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity grouptask2_tb
+-- Compiling architecture sim of grouptask2_tb
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity timebase
+-- Compiling architecture behaviour of timebase
+-- Compiling entity timebase_tb
+-- Compiling architecture structural of timebase_tb
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity robot
+-- Compiling architecture structural of robot
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity motorcontrol
+-- Compiling architecture behaviour of motorcontrol
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity mine_freq
+-- Compiling architecture behaviour of mine_freq
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity d_ff
+-- Compiling architecture behaviour of d_ff
+-- Compiling entity register_4
+-- Compiling architecture structural of register_4
+-- Compiling entity inputbuffer
+-- Compiling architecture structural of inputbuffer
+-- Compiling entity inputbuffer_tb
+-- Compiling architecture structural of inputbuffer_tb
+
+} {} {}} C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/buf_reg.vhdl {1 {vcom -work work -2002 -explicit -stats=none C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/buf_reg.vhdl
+Model Technology ModelSim PE Student Edition vcom 10.4a Compiler 2015.03 Apr  7 2015
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity buf_reg
+-- Compiling architecture arch of buf_reg
+
+} {} {}}
