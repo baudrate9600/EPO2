@@ -60,18 +60,11 @@ case state is
     reset_r_motor <= '0';
     
     if(sensor="111") then
-      next_state <= Wait_for_line;
+      next_state <= wait_for_black;
     else 
       next_state<=Startturn;
     end if;
-when Wait_for_line =>
-    motor_l_direction <= '1';
-    motor_r_direction <= '1';
-    if(sensor="110") then
-      next_state <= Sensor_check;
-    else 
-      next_state <= Wait_for_line;
-    end if;
+
 
 --When the checkpoint has been reached wait until new_data arrives from the uart and then go foward 
 when Check_point => 
