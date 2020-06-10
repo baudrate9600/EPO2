@@ -33,7 +33,7 @@ end entity controller;
 
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,Process_character,left,right,foward,wait_for_black);
+type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,left,right,foward,wait_for_black);
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
@@ -68,13 +68,11 @@ case state is
 
 --When the checkpoint has been reached wait until new_data arrives from the uart and then go foward 
 when Check_point => 
-    next_state <= foward;
-    pulse_counter <= 0; 
     if(new_data = '1') then
-      --next_state <= foward; 
-      
+       next_state <= foward;
+	pulse_counter <= 0; 
     else 
-      --next_state <= Check_point; 
+        next_state <= Check_point; 
     end if; 
 
 --Go foward for 5 pulses then process the character that was sent from the uart 
@@ -83,7 +81,7 @@ when foward =>
 			motor_r_direction <= '0';
 			reset_l_motor <= '0';
       reset_r_motor <= '0';
-    
+      --Process the revieced character. 
       if (internal_count_reset = '1') then 
           pulse_counter <= new_pulse_counter;
         if(pulse_counter = 5) then 
@@ -97,8 +95,7 @@ when foward =>
           end  if; 
         end if;
       end if;
---Process the revieced character. 
-when Process_character => 
+
 when left => 
       motor_l_direction <= '1';
 			motor_r_direction <= '1';
