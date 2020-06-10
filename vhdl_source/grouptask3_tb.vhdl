@@ -11,7 +11,7 @@ end entity;
 
 architecture sim of grouptask3_tb is
 
-    component robot is
+    component top is
         port (  clk             : in    std_logic;
                 reset           : in    std_logic;
 
@@ -50,7 +50,7 @@ architecture sim of grouptask3_tb is
 
 begin
 
-    robot_inst: robot port map (
+    robot_inst: top port map (
         clk         => clk,
         reset       => reset,
 

@@ -31,153 +31,194 @@ entity controller is
 		);
 end entity controller;
 
+
 architecture controller_behav of controller is
-	type diff_states is (Startturn,Sensor_check,Wait_for_line,Mine_revert,Mine_send);
-	signal state, next_state: diff_states;
-	signal sensor: std_logic_vector(2 downto 0); 
-	signal mine : std_logic; -- using for being in state mine_detect.
-	signal motorreset: std_logic;
-	signal reset_l_motor, reset_r_motor: std_logic;
+type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,Process_character,left,right,foward,wait_for_black);
+signal state, next_state: diff_states;
+signal sensor: std_logic_vector(2 downto 0); 
+signal mine : std_logic; -- using for being in state mine_detect.
+signal motorreset: std_logic;
+signal internal_count_reset : std_logic;
+signal new_pulse_counter : integer range 0 to 7;
+signal pulse_counter : integer range 0 to 7;
+signal reset_l_motor, reset_r_motor: std_logic;
+
+
+
 begin
-	sensor(2)<=sensor_l;
-	sensor(1)<=sensor_m;
-	sensor(0)<=sensor_r;
 
-	ttl:process(sensor,state,mine_detect, count_in)
-  	begin
-			case state is
-				when Startturn =>
-					motor_l_direction <= '1';
-					motor_r_direction <= '1';
-					reset_l_motor <= '0';
-					reset_r_motor <= '0';
-					read_data <= '1';
-					write_data <= '0';
-					data_send <= "11111111";
-					if(sensor="111") then
-						next_state <= Wait_for_line;
-					else 
-						next_state <= Startturn;
-					end if;
-				when Wait_for_line =>
-					motor_l_direction <= '1';
-					motor_r_direction <= '1';
-					reset_l_motor <= '0';
-					reset_r_motor <= '0';
-					read_data <= '1';
-					write_data <= '0';
-					data_send <= "11111111";
-					if(sensor="110") then
-						next_state <= Mine_revert;
-					else 
-						next_state <= Wait_for_line;
-					end if;
-				when Mine_revert =>
-					motor_l_direction <= '1';
-					motor_r_direction <= '1';
-					reset_l_motor <= '0';
-					reset_r_motor <= '0';
-					if (unsigned(count_in) = 0) then
-						next_state <= Mine_send;
-					else
-						next_state <= Mine_revert;
-    					end if;
-				when Mine_send =>
-					motor_l_direction <= '1';
-					motor_r_direction <= '1';
-					reset_l_motor <= '0';
-					reset_r_motor <= '0';
-      					read_data <= '0';
-					write_data <= '1';
-					data_send <= "01101101";
-					next_state <= Sensor_check;
-				when Sensor_check=>
-					read_data <= '1';
-					write_data <= '0';
-					data_send <= "11111111";
-					if (sensor="000") then
-						motor_l_direction <= '1';
-        					motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+sensor(2)<=sensor_l;
+sensor(1)<=sensor_m;
+sensor(0)<=sensor_r;
+ttl:process(sensor,state,mine_detect, internal_count_reset,new_pulse_counter)
+  begin
+case state is
+  when Startturn =>
+    motor_l_direction <= '1';
+    motor_r_direction <= '1';
+    reset_l_motor <= '0';
+    reset_r_motor <= '0';
+    
+    if(sensor="111") then
+      next_state <= Wait_for_line;
+    else 
+      next_state<=Startturn;
+    end if;
+when Wait_for_line =>
+    motor_l_direction <= '1';
+    motor_r_direction <= '1';
+    if(sensor="110") then
+      next_state <= Sensor_check;
+    else 
+      next_state <= Wait_for_line;
+    end if;
 
-					elsif(sensor= "001") then
-        					motor_l_direction <= '0';
-       						motor_r_direction <= '0';
-						reset_l_motor <= '1';
-						reset_r_motor <= '0';
+--When the checkpoint has been reached wait until new_data arrives from the uart and then go foward 
+when Check_point => 
+    next_state <= foward;
+    pulse_counter <= 0; 
+    if(new_data = '1') then
+      --next_state <= foward; 
+      
+    else 
+      --next_state <= Check_point; 
+    end if; 
 
-					elsif(sensor= "010") then
-						motor_l_direction <= '1';
-        					motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+--Go foward for 5 pulses then process the character that was sent from the uart 
+when foward => 
+      motor_l_direction <= '1';
+			motor_r_direction <= '0';
+			reset_l_motor <= '0';
+      reset_r_motor <= '0';
+    
+      if (internal_count_reset = '1') then 
+          pulse_counter <= new_pulse_counter;
+        if(pulse_counter = 5) then 
+          pulse_counter <= 0;
+          if data_received = X"6C" then    --'l'
+            next_state <= left;
+          elsif data_received = X"72" then --'r' 
+            next_state <= right; 
+          elsif data_received = X"66" then --'f'
+            next_state <= Sensor_check; 
+          end  if; 
+        end if;
+      end if;
+--Process the revieced character. 
+when Process_character => 
+when left => 
+      motor_l_direction <= '1';
+			motor_r_direction <= '1';
+			reset_l_motor <= '0';
+      reset_r_motor <= '0';
+      if(sensor = "111") then 
+        next_state <= wait_for_black;
+      end if; 
 
-					elsif(sensor= "011") then
-        					motor_l_direction <= '0';
-        					motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+when right => 
+      motor_l_direction <= '0'; 
+      motor_l_direction <= '0'; 
+      reset_l_motor <= '0'; 
+      reset_l_motor <= '0'; 
+      if(sensor = "111") then 
+        next_state <= wait_for_black; 
+      end if;
+when wait_for_black => 
+      if sensor_l = '0' or sensor_r = '0' or sensor_m = '0' then
+        next_state <= Sensor_check;
+      end if;
+when Sensor_check=>
+    --All black ( checkpoint) 
+    if (sensor="000") then
+      motor_l_direction<= '1';
+      motor_r_direction <= '0';
+      reset_l_motor <= '0';
+      reset_r_motor <= '0';
+    elsif(sensor= "001") then
+        motor_l_direction <= '0';
+        motor_r_direction <= '0';
+        reset_l_motor <= '1';
+        reset_r_motor <= '0';
+    elsif(sensor= "010") then
+      motor_l_direction <= '1';
+        motor_r_direction <= '0';
+      reset_l_motor <= '0';
+      reset_r_motor <= '0';
+    elsif(sensor= "011") then
+        motor_l_direction <= '0';
+        motor_r_direction <= '0';
+        reset_l_motor <= '0';
+        reset_r_motor <= '0';
 
-					elsif(sensor= "100") then
-						motor_l_direction <= '1';
-        					motor_r_direction <= '0';
-						reset_r_motor <= '1';
-						reset_l_motor <= '0';
+    elsif(sensor= "100") then
+        motor_l_direction <= '1';
+        motor_r_direction <= '0';
+        reset_r_motor <= '1';
+        reset_l_motor <= '0';
 
-					elsif(sensor= "101") then
-						motor_l_direction <= '1';
-        					motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+elsif(sensor= "101") then
+        motor_l_direction <= '1';
+        motor_r_direction <= '0';
+        reset_l_motor <= '0';
+        reset_r_motor <= '0';
 
-					elsif(sensor= "110") then
-						motor_l_direction <= '1';
-    						motor_r_direction <= '1';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+elsif(sensor= "110") then
+        motor_l_direction <= '1';
+        motor_r_direction <= '1';
+        reset_l_motor <= '0';
+        reset_r_motor <= '0';
 
-					elsif(sensor= "111") then
-						motor_l_direction <= '1';
-   						motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
+elsif(sensor= "111") then
+        motor_l_direction <= '1';
+        motor_r_direction <= '0';
+        reset_l_motor <= '0';
+        reset_r_motor <= '0';
 
-					else
-						motor_l_direction <= '0';
-        					motor_r_direction <= '0';
-						reset_l_motor <= '0';
-						reset_r_motor <= '0';
-        				end if;
-					if(mine_detect='1') then
-						next_state<=Startturn;
-					else
-						next_state<=Sensor_check;
-					end if;
-     			end case;       
-	end process;
+else
+        motor_l_direction <= '0';
+        motor_r_direction <= '0';
+        reset_l_motor <= '0';
+        reset_r_motor <= '0';
+end if;
 
-	clk_sig: process(clk,reset)
-	begin
-		if (reset='1') then
-    			count_reset <= '1';
-    			motorreset <= '1';
-    			state<=Sensor_check;
-    		elsif (clk'event and clk = '1') then
-			state<=next_state;
-        		if (unsigned(count_in) = 1000000) then
-      				count_reset <= '1';
-      				motorreset <= '1';
-    			else
-      				count_reset <= '0';
-      				motorreset <= '0';
-    			end if;
-		end if;
-	end process;
+if(mine_detect='1') then
+      next_state<=Startturn;
+else
+    if(sensor = "000") then 
+        next_state<=Check_point;
+    else
+        next_state <= Sensor_check;
+    end if;
+end if;
+     end case;       
+end process;
 
-	motor_l_reset <= reset_l_motor or motorreset;
-	motor_r_reset <= reset_r_motor or motorreset;
+clk_sig: process(clk,reset)
+begin
+if (reset='1') then
+    count_reset <= '1';
+    motorreset <= '1';
+    state<=Sensor_check;
+    elsif (clk'event and clk='1') then
+        state<=next_state;
+        if (unsigned(count_in) =1000000) then
+      count_reset <= '1';
+      internal_count_reset <= '1'; 
+      motorreset <= '1';
+      new_pulse_counter <= pulse_counter + 1;
+    else
+      internal_count_reset <= '0';
+      count_reset <= '0';
+      motorreset <= '0';
+    end if;
+end if;
+end process;
+
+
+
+motor_l_reset <= reset_l_motor or motorreset ;
+motor_r_reset <= reset_r_motor or motorreset ;
+
 
 
 end controller_behav;
-
