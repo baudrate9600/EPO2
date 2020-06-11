@@ -42,6 +42,8 @@ signal internal_count_reset : std_logic;
 signal new_pulse_counter : integer range 0 to 7;
 signal pulse_counter : integer range 0 to 7;
 signal reset_l_motor, reset_r_motor: std_logic;
+signal start_uart_transfer : std_logic; 
+signal usart_state : std_logic;
 
 
 
@@ -86,6 +88,8 @@ when foward =>
           pulse_counter <= new_pulse_counter;
         if(pulse_counter = 5) then 
           pulse_counter <= 0;
+          start_uart_transfer <= '1';
+          data_send <= X"67";
           if data_received = X"6C" then    --'l'
             next_state <= left;
           elsif data_received = X"72" then --'r' 
@@ -116,8 +120,11 @@ when right =>
 when wait_for_black => 
       if sensor_l = '0' or sensor_r = '0' or sensor_m = '0' then
         next_state <= Sensor_check;
+        
       end if;
 when Sensor_check=>
+      --Turn of usart 
+      start_uart_transfer <= '0';
     --All black ( checkpoint) 
     if (sensor="000") then
       motor_l_direction<= '1';
@@ -205,6 +212,33 @@ end if;
 end process;
 
 
+--When start_uart_transfer is 1 it sends 1 byte 
+--start_uart_transfer has to become 0 first before it can send again 
+send_usart: process(clk)
+begin
+  if reset = '1' then 
+      usart_state <= '0'; 
+  elsif rising_edge(clk) then 
+    case usart_state is
+      when '0' => 
+        if start_uart_transfer = '1' then 
+            write_data <= '1'; 
+            usart_state <= '1';
+        end if; 
+      when '1' =>
+          write_data <= '0'; 
+        if start_uart_transfer = '0' then 
+          usart_state <= '0'; 
+        end if;
+
+      when others =>
+        
+    
+    end case;
+
+  end if;
+  
+end process send_usart;
 
 motor_l_reset <= reset_l_motor or motorreset ;
 motor_r_reset <= reset_r_motor or motorreset ;

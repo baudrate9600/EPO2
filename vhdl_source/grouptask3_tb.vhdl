@@ -22,7 +22,7 @@ architecture sim of grouptask3_tb is
                 mine_sensor     : in    std_logic;
 
                 rx              : in    std_logic;
-
+                tx              : out   std_logic;
                 motor_l_pwm     : out   std_logic;
                 motor_r_pwm     : out   std_logic
         );
@@ -41,7 +41,7 @@ architecture sim of grouptask3_tb is
     signal sensors : std_logic_vector(2 downto 0);
     signal sensor_l, sensor_m, sensor_r : std_logic;
     signal mine_sensor : std_logic;
-    signal rx : std_logic;
+    signal rx,tx : std_logic;
     signal motor_l_pwm, motor_r_pwm : std_logic;
 
     -- Host TX
@@ -60,8 +60,8 @@ begin
 
         mine_sensor => mine_sensor,
 
-        rx          => rx,
-
+        rx          => rx,  
+        tx          => tx, 
         motor_l_pwm => motor_l_pwm,
         motor_r_pwm => motor_r_pwm
     );
