@@ -33,7 +33,7 @@ end entity controller;
 
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Wait_for_line,Check_point,left,right,foward,wait_for_black);
+type diff_states is (Startturn,Sensor_check,Check_point,left,right,foward,wait_for_black);
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
