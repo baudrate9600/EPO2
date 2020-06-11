@@ -24,14 +24,13 @@ motor_r_direction : out std_logic
 end entity controller;
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Wait_for_line,Startrigth,Goforward); -- add Startleft
+type diff_states is (Startturn,Sensor_check,Wait_for_line,Rigth,Forward);
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; 			-- using for being in state mine_detect.
 signal motorreset: std_logic;
 signal reset_l_motor, reset_r_motor: std_logic;
---signal direction : std_logic;			-- direction=0 for left turn, direction=1 for rigth turn
-signal rounds : integer range 0 to 5;
+signal pulse_counter : integer range 0 to 5;
 begin
 sensor(2)<=sensor_l;
 sensor(1)<=sensor_m;
@@ -49,7 +48,6 @@ ttl:process(sensor,state,mine_detect, count_in)
 			else next_state<=Startturn;
 			end if;
 		when Wait_for_line =>
-			--if(direction='1') then
 				motor_l_direction <= '1';
 				motor_r_direction <= '1';
 				reset_l_motor <= '0';
@@ -58,57 +56,30 @@ ttl:process(sensor,state,mine_detect, count_in)
 					next_state <= Sensor_check;
 				else next_state <= Wait_for_line;
 				end if;
-			--else
-				--motor_l_direction <= '0';
-				--motor_r_direction <= '0';
-				--reset_l_motor <= '0';
-				--reset_r_motor <= '0';
-				--if(sensor="011") then
-				--	next_state <= Sensor_check;
-				--else next_state <= Wait_for_line;
-				--end if;
-			--end if;
-		when StartRigth =>
+		when Rigth =>
 			motor_l_direction <= '1';
 			motor_r_direction <= '1';
 			reset_l_motor <= '0';
 			reset_r_motor <= '0';
-			--direction<= '1';
 			if(sensor="111") then
 				next_state <= Wait_for_line;
-			else next_state <= StartRigth;
-			end if;
---		when StartLeft =>
---			motor_l_direction <= '0';
---			motor_r_direction <= '0';
---			reset_l_motor <= '0';
---			reset_r_motor <= '0';
---			direction<= '0';
---			if(sensor="111") then
---				next_state <= Wait_for_line;
---			else next_state <= StartLeft;
-			
-		when Goforward =>
+			else next_state <= Rigth;
+			end if;			
+		when Forward =>
 			motor_l_direction <= '1';
 			motor_r_direction <= '0';
 			reset_l_motor <= '0';
 			reset_r_motor <= '0';
 			if(unsigned(count_in)=1000000) then
-				if(rounds=5) then
-					--if (data_out = X"114") then
-						next_state <= StartRigth;
-					--else if (data_out = X"102") then
-					--	next_state <= Sensor_check;
-					--else if (data_out = X"108") then 
-					--	next_state <= StartLeft;
-					--end if;
-					rounds <= 0;
+				if(pulse_counter=5) then
+					next_state <= Rigth;
+					pulse_counter <= 0;
 				else
-					rounds <= rounds+1;
-					next_state <= Goforward;
+					pulse_counter <= pulse_counter+1;
+					next_state <= Forward;
 				end if;
 			else
-				next_state <= Goforward;
+				next_state <= Forward;
 			end if;
 		when Sensor_check=>
 			if (sensor="000") then
@@ -167,12 +138,9 @@ ttl:process(sensor,state,mine_detect, count_in)
 		        end if;
 			
 			if(mine_detect='1') then
-				--direction<= '1';
 				next_state<=Startturn;
-			--else if(rising_edge(read_data)) then
-				--next_state<=Goforward;
 			elsif(sensor="000") then
-				next_state <= Goforward;
+				next_state <=Forward;
 			else
 				next_state<=Sensor_check;
 			end if;

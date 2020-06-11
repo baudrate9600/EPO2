@@ -21,9 +21,9 @@ VRe;Y4L4QFd[J?K4PbW2Be1
 !s100 P03Fg`?MX1CSIc;O]B^OD0
 Z6 OP;C;10.4a;61
 32
-Z7 !s110 1591712628
+Z7 !s110 1591859588
 !i10b 1
-Z8 !s108 1591712628.000000
+Z8 !s108 1591859588.000000
 Z9 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/buf_reg.vhdl|
 Z10 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/buf_reg.vhdl|
 !i113 1
@@ -48,24 +48,24 @@ R10
 R11
 R12
 Econtroller
-Z13 w1591715125
+Z13 w1591859579
 R2
 R1
 Z14 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 R3
-Z15 8C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\controller.vhdl
-Z16 FC:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\controller.vhdl
+Z15 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/controller.vhdl
+Z16 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/controller.vhdl
 l0
 L6
 VjOUc]OhLLee=bEVkf;dbG2
 !s100 H]e9MKB7z>BI3>n8z=TGZ0
 R6
 32
-Z17 !s110 1591715157
+Z17 !s110 1591859589
 !i10b 1
-Z18 !s108 1591715157.000000
-Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\controller.vhdl|
-Z20 !s107 C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\controller.vhdl|
+Z18 !s108 1591859589.000000
+Z19 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/controller.vhdl|
+Z20 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/controller.vhdl|
 !i113 1
 R11
 R12
@@ -73,11 +73,11 @@ Acontroller_behav
 R2
 R1
 R14
-Z21 DEx4 work 10 controller 0 22 jOUc]OhLLee=bEVkf;dbG2
-l35
+DEx4 work 10 controller 0 22 jOUc]OhLLee=bEVkf;dbG2
+l34
 L26
-VE`5izNJ>8biLGmF>D[k<=3
-!s100 Sh52Um[<nb[MiSPNDQ?9:1
+VDZeHU7Wae7=mGCNIYKlPY3
+!s100 U3CMdCQG9GoJ<2R?U7HB80
 R6
 32
 R17
@@ -93,19 +93,19 @@ R0
 R1
 R2
 R3
-Z22 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl
-Z23 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl
+Z21 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl
+Z22 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl
 l0
 L4
 V=>mUHKng:h24ehkHC>XE41
 !s100 T11aRKlP;zR``aILkgIZS2
 R6
 32
-Z24 !s110 1591712630
+R17
 !i10b 1
-Z25 !s108 1591712630.000000
-Z26 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl|
-Z27 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl|
+R18
+Z23 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl|
+Z24 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/inputbuffer.vhdl|
 !i113 1
 R11
 R12
@@ -119,32 +119,32 @@ VehUTTjUE84M0QbknH4HJ22
 !s100 @IU:o?Zj4k0N[^a0][MK:3
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
 Egrouptask2_tb
-Z28 w1591693428
+Z25 w1591775995
 R1
 R2
 R3
-Z29 8C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\grouptask2_tb.vhdl
-Z30 FC:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\grouptask2_tb.vhdl
+Z26 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/grouptask2_tb.vhdl
+Z27 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/grouptask2_tb.vhdl
 l0
 L7
 Vo?fmcFnf^Pz==LB703o0U0
 !s100 3aLlgPE=`^ThaCVP>JBSM1
 R6
 32
-R24
+R17
 !i10b 1
-R25
-Z31 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\grouptask2_tb.vhdl|
-Z32 !s107 C:\Users\nadin\Desktop\testgit\EPO2\EPO2\vhdl_source\grouptask2_tb.vhdl|
+R18
+Z28 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/grouptask2_tb.vhdl|
+Z29 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/grouptask2_tb.vhdl|
 !i113 1
 R11
 R12
@@ -158,11 +158,11 @@ Ve7=S:__djXV4A0P2P73QH2
 !s100 6dd]ii@BmFI58jXXznY900
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R31
-R32
+R18
+R28
+R29
 !i113 1
 R11
 R12
@@ -171,19 +171,19 @@ R0
 R1
 R2
 R3
+R21
 R22
-R23
 l0
 L56
 Vc_R]XA<TkKM`aRYfiUIBL3
 !s100 RK9G9WkY@jL?KW7TCI^622
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -197,11 +197,11 @@ V^lc:^TEmZnT?E1YQ5nEeI1
 !s100 z2Eod6f5_I?^?SgHZBG8L1
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -210,19 +210,19 @@ R0
 R1
 R2
 R3
+R21
 R22
-R23
 l0
 L111
 VdKShOX]TN5Zl=@Nn@0N;83
 !s100 c?Ta0FnincGjz72J^6zoQ0
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -236,11 +236,11 @@ VUeI4kYRRIU2V<R<2DbB4]2
 !s100 g:JAe]@RU1;<2>O7`QHJj1
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -250,19 +250,19 @@ R14
 R1
 R2
 R3
-Z33 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl
-Z34 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl
+Z30 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl
+Z31 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl
 l0
 L5
 V8i2?0Wz@9JkkOI>9f>8n70
 !s100 9UJh<h8I>QJodg=L`Ek<H1
 R6
 32
-Z35 !s110 1591712631
+Z32 !s110 1591859590
 !i10b 1
-R25
-Z36 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl|
-Z37 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl|
+Z33 !s108 1591859590.000000
+Z34 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl|
+Z35 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/mine_freq.vhdl|
 !i113 1
 R11
 R12
@@ -277,11 +277,11 @@ Vi_?XPb4SDGh:dMCQ=hdc>1
 !s100 KW4Xz^JeUXU3DMCahV;co3
 R6
 32
-R35
+R32
 !i10b 1
-R25
-R36
-R37
+R33
+R34
+R35
 !i113 1
 R11
 R12
@@ -291,19 +291,19 @@ R14
 R1
 R2
 R3
-Z38 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl
-Z39 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl
+Z36 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl
+Z37 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl
 l0
 L5
 VFhG@M1ggT8Z>O4]XBMNA22
 !s100 S_=3e9UQoCYHdgXii3WGM2
 R6
 32
-R35
+R32
 !i10b 1
-Z40 !s108 1591712631.000000
-Z41 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl|
-Z42 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl|
+R33
+Z38 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl|
+Z39 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/motorcontrol.vhdl|
 !i113 1
 R11
 R12
@@ -318,11 +318,11 @@ VFQWi;Nczl^4D56F5aldm@3
 !s100 zIGb9Mk4`>Z=P?Yc>;ELK0
 R6
 32
-R35
+R32
 !i10b 1
-R40
-R41
-R42
+R33
+R38
+R39
 !i113 1
 R11
 R12
@@ -331,19 +331,19 @@ R0
 R1
 R2
 R3
+R21
 R22
-R23
 l0
 L24
 V29Z[26?7W:E>HCD0@coR`1
 !s100 148F=9M;;700Rh;AIaPQ02
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -357,11 +357,11 @@ VQKPX`fdEkElPh?[C;Clj]3
 !s100 Y6_:@e[8GkbaHgnz;6^aj1
 R6
 32
-R24
+R17
 !i10b 1
-R25
-R26
-R27
+R18
+R23
+R24
 !i113 1
 R11
 R12
@@ -370,19 +370,19 @@ R0
 R1
 R2
 R3
-Z43 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl
-Z44 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl
+Z40 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl
+Z41 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl
 l0
 L4
 VFeC^BAaWBcEM0E0^hmXh00
 !s100 AoaT<fE71R[`Q<8SziBJ80
 R6
 32
-Z45 !s110 1591712632
+Z42 !s110 1591859591
 !i10b 1
-R40
-Z46 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl|
-Z47 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl|
+R33
+Z43 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl|
+Z44 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/robot.vhdl|
 !i113 1
 R11
 R12
@@ -396,11 +396,11 @@ V=VD0i4kz[]ZQO]N:8ZiX53
 !s100 1G38bDIz@7lDlh@76;TYC2
 R6
 32
-R45
+R42
 !i10b 1
-R40
-R46
-R47
+R33
+R43
+R44
 !i113 1
 R11
 R12
@@ -410,19 +410,19 @@ R14
 R1
 R2
 R3
-Z48 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl
-Z49 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl
+Z45 8C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl
+Z46 FC:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl
 l0
 L6
 VBEbN<JSG<L2`JmzeQBE_43
 !s100 =0dM<>^4BAnKHXf_0zI8F2
 R6
 32
-R45
+R42
 !i10b 1
-Z50 !s108 1591712632.000000
-Z51 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl|
-Z52 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl|
+Z47 !s108 1591859591.000000
+Z48 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl|
+Z49 !s107 C:/Users/nadin/Desktop/testgit/EPO2/EPO2/vhdl_source/timebase.vhdl|
 !i113 1
 R11
 R12
@@ -430,18 +430,18 @@ Abehaviour
 R14
 R1
 R2
-DEx4 work 8 timebase 0 22 BEbN<JSG<L2`JmzeQBE_43
+Z50 DEx4 work 8 timebase 0 22 BEbN<JSG<L2`JmzeQBE_43
 l17
 L14
-Vz3QChX7;ATjCk^GDCcEPZ2
-!s100 0RZVPEO?@BM[VWnjK28Rj2
+Z51 Vz3QChX7;ATjCk^GDCcEPZ2
+Z52 !s100 0RZVPEO?@BM[VWnjK28Rj2
 R6
 32
-R45
+R42
 !i10b 1
-R50
-R51
-R52
+R47
+R48
+R49
 !i113 1
 R11
 R12
@@ -451,19 +451,19 @@ R14
 R1
 R2
 R3
-R48
-R49
+R45
+R46
 l0
 L40
 VRHf>Gdim[8dHf5feDZF^L0
 !s100 S@6G4k<k;[20<DS;eXz;E3
 R6
 32
-R45
+R42
 !i10b 1
-R50
-R51
-R52
+R47
+R48
+R49
 !i113 1
 R11
 R12
@@ -471,18 +471,18 @@ Astructural
 R14
 R1
 R2
-DEx4 work 11 timebase_tb 0 22 RHf>Gdim[8dHf5feDZF^L0
+Z53 DEx4 work 11 timebase_tb 0 22 RHf>Gdim[8dHf5feDZF^L0
 l53
 L43
-VIV2b;eDANUD_AQ3l?Sn=>1
-!s100 <TH]C<LEN`_CN2]ffeO:b3
+Z54 VIV2b;eDANUD_AQ3l?Sn=>1
+Z55 !s100 <TH]C<LEN`_CN2]ffeO:b3
 R6
 32
-R45
+R42
 !i10b 1
-R50
-R51
-R52
+R47
+R48
+R49
 !i113 1
 R11
 R12
