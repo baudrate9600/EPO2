@@ -1,0 +1,7 @@
+#ignore back up files from modelsim
+work
+*.vhdl.bak
+*.gitignore.swp 
+*.cr.mti
+*.mpf
+*.wlf 
