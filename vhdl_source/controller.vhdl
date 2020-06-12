@@ -82,9 +82,6 @@ when Check_point =>
 
 --Go foward for 5 pulses then process the character that was sent from the uart 
 when foward => 
-      read_data <= '1';
-      write_data <= '0';
-      data_send <= "11111111";
       motor_l_direction <= '1';
       motor_r_direction <= '0';
       reset_l_motor <= '0';
@@ -146,8 +143,7 @@ when Mine_send =>
       motor_r_direction <= '0';
       reset_l_motor <= '1';
       reset_r_motor <= '1';
-      read_data <= '0';
-      write_data <= '1';
+      start_uart_transfer <= '1';
       data_send <= "01101101";
       next_state <= Mine_check_point;
 
