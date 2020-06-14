@@ -97,17 +97,17 @@ when foward =>
       end if;
 
 when left => 
-      motor_l_direction <= '1';
-			motor_r_direction <= '1';
-			reset_l_motor <= '0';
+      motor_l_direction <= '0';
+      motor_r_direction <= '0';
+      reset_l_motor <= '0';
       reset_r_motor <= '0';
       if(sensor = "111") then 
         next_state <= wait_for_black;
       end if; 
 
 when right => 
-      motor_l_direction <= '0'; 
-      motor_l_direction <= '0'; 
+      motor_l_direction <= '1'; 
+      motor_l_direction <= '1'; 
       reset_l_motor <= '0'; 
       reset_l_motor <= '0'; 
       if(sensor = "111") then 
