@@ -17,7 +17,8 @@ entity controller is
 		write_data: out std_logic; 
 		read_data: out std_logic;  
 		new_data: in std_logic;
-		data_received: in std_logic_vector(7 downto 0);
+		data_received
+: in std_logic_vector(7 downto 0);
 		data_send: out std_logic_vector(7 downto 0);
 
 		count_in : in std_logic_vector (19 downto 0);
@@ -33,7 +34,7 @@ end entity controller;
 
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Check_point,sleft,sright,foward,wait_for_black, mine_send, Mine_check_point,backwards, t_send); -- , mine_revert, t_revert
+type diff_states is (Startturn,Sensor_check,Check_point,sleft,sright,foward,wait_for_black, mine_send, Mine_check_point,backwards, t_send, sendg_reset); -- , mine_revert, t_revert
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
@@ -45,6 +46,9 @@ signal reset_l_motor, reset_r_motor: std_logic;
 signal start_uart_transfer : std_logic; 
 signal usart_state : std_logic;
 signal skipcrossing : std_logic;
+signal sendg : std_logic;
+signal mine_reset : std_logic;
+signal turn : std_logic; -- 1 for 180 turn, 0 for backwards
 
 begin
 
@@ -60,11 +64,11 @@ case state is
     motor_r_direction <= '1';
     reset_l_motor <= '0';
     reset_r_motor <= '0';
+    mine_reset <= '0';
+    turn <= '1';
 --    read_data <= '0';
     
     if(sensor="111") then
-      start_uart_transfer <= '1';
-      data_send <= X"67";
       next_state <= wait_for_black;
     else 
       next_state<=Startturn;
@@ -111,18 +115,24 @@ when sleft =>
       motor_r_direction <= '0';
       reset_l_motor <= '0';
       reset_r_motor <= '0';
+      turn <= '0';
       if(sensor = "111") then 
         next_state <= wait_for_black;
+      else
+	next_state <= sleft;
       end if; 
 
 when sright => 
 --      read_data <= '1';
       motor_l_direction <= '1'; 
-      motor_l_direction <= '1'; 
+      motor_r_direction <= '1'; 
       reset_l_motor <= '0'; 
-      reset_l_motor <= '0'; 
+      reset_r_motor <= '0'; 
+      turn <= '0';
       if(sensor = "111") then 
         next_state <= wait_for_black; 
+      else
+	next_state <= sright;
       end if;
 
 --when Mine_revert =>
@@ -137,14 +147,18 @@ when sright =>
 --      end if;
 				
 when Mine_send =>
-      motor_l_direction <= '0';
-      motor_r_direction <= '0';
-      reset_l_motor <= '1';
-      reset_r_motor <= '1';
 --      read_data <= '0';
-      start_uart_transfer <= '1';
-      data_send <= X"6D";
-      next_state <= Mine_check_point;
+	motor_l_direction <= '0';
+      	motor_r_direction <= '0';
+      	reset_l_motor <= '1';
+      	reset_r_motor <= '1';
+	if (unsigned(count_in) = 0) then
+      		start_uart_transfer <= '1';
+      		data_send <= X"6D";
+		next_state <= Mine_check_point;
+	else
+		next_state <= Mine_send;
+	end if;
 
 --when t_revert =>
 --      motor_l_direction <= '0';
@@ -168,15 +182,25 @@ when t_send =>
       next_state <= Mine_check_point;
 
 when Mine_check_point =>
-      if (data_received = X"6F") then    --'o' or 't' for challenge b
-            next_state <= Startturn;
-      elsif ((data_received = X"70") or (data_received= X"71")) then --'p' or 'q'
-            next_state <= backwards; 
-      end  if; 
+	start_uart_transfer <= '0';
+	if (data_received'event) then
+      		if (data_received = X"6F") then    --'o' or 't' for challenge b
+	   		mine_reset <= '1';
+            		next_state <= Startturn;
+     		elsif ((data_received = X"70") or (data_received= X"71")) then --'p' or 'q'
+	   		mine_reset <= '1';
+            		next_state <= backwards; 
+      		else
+            		next_state <= Mine_check_point;
+      		end  if; 
+	else
+		next_state <= Mine_check_point;
+      	end  if; 
 
 --Go backwards for 5 pulses then process the character that was sent from the uart 
 when backwards => 
 --      read_data <= '1';
+      mine_reset <= '0';
       motor_l_direction <= '0';
       motor_r_direction <= '1';
       reset_l_motor <= '0';
@@ -184,24 +208,35 @@ when backwards =>
       --Process the revieced character. 
       if (internal_count_reset = '1') then 
           pulse_counter <= new_pulse_counter;
-        if(pulse_counter = 5) then 
+        if(pulse_counter = 6) then 
           pulse_counter <= 0;
 --	  read_data <= '0';
-	  start_uart_transfer <= '1';
-          data_send <= X"67";
           if (data_received = X"70") then    --'p'
             next_state <= sright;
           elsif (data_received = X"71") then --'q' 
             next_state <= sleft; 
+	  else
+	    next_state <= backwards;
           end  if; 
+	else
+	    next_state <= backwards;
         end if;
+      else
+      	next_state <= backwards;
       end if;
 
 when wait_for_black =>
 --      read_data <= '1';
       if (sensor_l = '0' or sensor_r = '0' or sensor_m = '0') then
+	sendg <= '1';
         next_state <= Sensor_check;
+      else
+	next_state <= wait_for_black; 
       end if;
+
+when sendg_reset =>
+	sendg <= '0';
+        next_state <= Sensor_check;
 
 when Sensor_check=>
     start_uart_transfer <= '0';
@@ -254,12 +289,20 @@ when Sensor_check=>
     else
         motor_l_direction <= '0';
         motor_r_direction <= '0';
-        reset_l_motor <= '0';
-        reset_r_motor <= '0';
+        reset_l_motor <= '1';
+        reset_r_motor <= '1';
     end if;
 
 if(mine_detect='1') then
       next_state<= Mine_send;
+elsif (turn = '0' and sendg = '1' and ((sensor_l = '1') or (sensor_r = '1') or (sensor_m='1')) and (unsigned(count_in) = 0)) then
+	start_uart_transfer <= '1';
+      	data_send <= X"67";
+	next_state <= sendg_reset;
+elsif (turn = '1' and sendg = '1' and sensor= "101" and (unsigned(count_in) = 0)) then
+	start_uart_transfer <= '1';
+      	data_send <= X"67";
+	next_state <= sendg_reset;
 elsif(sensor="111") then
       next_state<= t_send;
 else
@@ -278,7 +321,7 @@ else
 	end if;
 end if;
 end if;
-     end case;       
+     end case;  
 end process;
 
 clk_sig: process(clk,reset)
@@ -291,7 +334,7 @@ if (reset='1') then
 --    start_uart_transfer <= '0';
     elsif (clk'event and clk='1') then
         state<=next_state;
-        if (unsigned(count_in) =1000000) then
+        if (unsigned(count_in) = 1000000 or mine_reset = '1') then
       count_reset <= '1';
       internal_count_reset <= '1'; 
       motorreset <= '1';
@@ -314,11 +357,13 @@ begin
     case usart_state is
       when '0' => 
         if start_uart_transfer = '1' then 
+	    read_data <= '0';
             write_data <= '1'; 
             usart_state <= '1';
         end if; 
       when '1' =>
-          write_data <= '0'; 
+	  read_data <= '1';
+          write_data <= '0';
         if start_uart_transfer = '0' then 
           usart_state <= '0'; 
         end if;
