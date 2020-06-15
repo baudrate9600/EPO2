@@ -44,11 +44,7 @@ signal pulse_counter : integer range 0 to 7;
 signal reset_l_motor, reset_r_motor: std_logic;
 signal start_uart_transfer : std_logic; 
 signal usart_state : std_logic;
-<<<<<<< HEAD
 signal writeg : std_logic;
-=======
-
->>>>>>> a5bc3a3f4be8140587ea703e94f9a239721c237c
 
 
 begin
@@ -92,12 +88,7 @@ when foward =>
           pulse_counter <= new_pulse_counter;
         if(pulse_counter = 5) then 
           pulse_counter <= 0;
-<<<<<<< HEAD
           
-=======
-          start_uart_transfer <= '1';
-          data_send <= X"67";
->>>>>>> a5bc3a3f4be8140587ea703e94f9a239721c237c
           if data_received = X"6C" then    --'l'
             next_state <= left;
           elsif data_received = X"72" then --'r' 
@@ -130,16 +121,11 @@ when right =>
 when wait_for_black => 
       if sensor_l = '0' or sensor_r = '0' or sensor_m = '0' then
         next_state <= Sensor_check;
-<<<<<<< HEAD
         writeg<='1';
-=======
-        
->>>>>>> a5bc3a3f4be8140587ea703e94f9a239721c237c
       end if;
 
 when Sensor_check=>
       --Turn of usart 
-<<<<<<< HEAD
       if(writeg = '1') then
 	start_uart_transfer <= '1';
         data_send <= X"67";
@@ -147,9 +133,6 @@ when Sensor_check=>
       else
 	start_uart_transfer <= '0';
       end if;
-=======
-      start_uart_transfer <= '0';
->>>>>>> a5bc3a3f4be8140587ea703e94f9a239721c237c
     --All black ( checkpoint) 
     if (sensor="000") then
       motor_l_direction<= '1';
@@ -271,5 +254,4 @@ motor_r_reset <= reset_r_motor or motorreset ;
 
 
 end controller_behav;
-
 
