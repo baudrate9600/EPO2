@@ -1,37 +1,42 @@
--- grouptask 3 testbench for EPO-2 student version
+-- grouptask 4 testbench for EPO-2 student version
 
 
 library IEEE;
 use IEEE.std_logic_1164.all;
 
 
-entity grouptask3_tb is
+entity grouptask4_tb is
 end entity;
 
 
-architecture sim of grouptask3_tb is
-
-    component top is
-        port (  clk             : in    std_logic;
-                reset           : in    std_logic;
-
-                sensor_l_in     : in    std_logic;
-                sensor_m_in     : in    std_logic;
-                sensor_r_in     : in    std_logic;
-
-                mine_sensor     : in    std_logic;
-
-                rx              : in    std_logic;
-                tx              : out   std_logic;
-                motor_l_pwm     : out   std_logic;
-                motor_r_pwm     : out   std_logic
-        );
-    end component;
+architecture sim of grouptask4_tb is
 
     constant CLOCK_PERIOD    : time := 20 ns; -- 50 MHz clock
     constant BAUD_PERIOD     : time := 104167 ns; -- 9600 baud rate
     constant PWM_PERIOD      : time := 20 ms;
     constant NO_MINE_PERIOD  : time := 100 us; -- 10 kHz
+
+
+    component top is
+    	port (
+    		clk			: in  std_logic;
+    		reset			: in  std_logic;
+
+    		sensor_l_in		: in  std_logic;
+    		sensor_m_in		: in  std_logic;
+    		sensor_r_in		: in  std_logic;
+
+    		mine_sensor		: in  std_logic;
+    		--mine_sensor_bootstrap	: out std_logic;
+
+    		rx			: in  std_logic;
+    		tx			: out std_logic;
+
+    		motor_l_pwm		: out std_logic;
+    		motor_r_pwm		: out std_logic
+    	);
+    end component top;
+
 
     -- Clock/reset
     signal clk   : std_logic := '0';
@@ -41,27 +46,30 @@ architecture sim of grouptask3_tb is
     signal sensors : std_logic_vector(2 downto 0);
     signal sensor_l, sensor_m, sensor_r : std_logic;
     signal mine_sensor : std_logic;
-    signal rx,tx : std_logic;
+    signal rx, tx : std_logic;
     signal motor_l_pwm, motor_r_pwm : std_logic;
 
-    -- Host TX
+    -- Host UART
     signal tx_send : std_logic := '0';
     signal tx_byte : std_logic_vector(7 downto 0);
+    signal rx_byte : std_logic_vector(7 downto 0);
 
 begin
 
+    -- Robot instance
     robot_inst: top port map (
         clk         => clk,
         reset       => reset,
 
-        sensor_l_in => sensors(2),
-        sensor_m_in => sensors(1),
-        sensor_r_in => sensors(0),
+        sensor_l_in    => sensors(2),
+        sensor_m_in   => sensors(1),
+        sensor_r_in    => sensors(0),
 
         mine_sensor => mine_sensor,
 
-        rx          => rx,  
-        tx          => tx, 
+        rx          => rx,
+        tx          => tx,
+
         motor_l_pwm => motor_l_pwm,
         motor_r_pwm => motor_r_pwm
     );
@@ -80,6 +88,23 @@ begin
         wait for 0.5*NO_MINE_PERIOD;
         mine_sensor <= '1';
         wait for 0.5*NO_MINE_PERIOD;
+    end process;
+
+    -- Simulated host RX
+    process
+    begin
+        wait until tx = '0';
+
+        wait for BAUD_PERIOD/2;
+        if tx = '0' then -- Start bit detected
+            for I in 0 to 7 loop
+                wait for BAUD_PERIOD;
+                rx_byte(I) <= tx;
+            end loop;
+        end if;
+
+        wait for 60 ms; -- reset output for next round
+        rx_byte <= (others => 'U');
     end process;
 
     -- Simulated host TX
