@@ -49,6 +49,7 @@ signal skipcrossing : std_logic;
 signal sendg : std_logic;
 signal mine_reset : std_logic;
 signal turn : std_logic; -- 1 for 180 turn, 0 for backwards
+signal skip_reset : std_logic;
 
 begin
 
@@ -91,20 +92,20 @@ when foward =>
       motor_r_direction <= '0';
       reset_l_motor <= '0';
       reset_r_motor <= '0';
+      turn <= '0';
       --Process the revieced character. 
       if (internal_count_reset = '1') then 
           pulse_counter <= new_pulse_counter;
-        if(pulse_counter = 5) then 
+        if(pulse_counter = 6) then 
 --	  read_data <= '0';
           pulse_counter <= 0;
-	  start_uart_transfer <= '1';
-          data_send <= X"67";
           if (data_received = X"6C") then    --'l'
             next_state <= sleft;
           elsif (data_received = X"72") then --'r' 
             next_state <= sright; 
           elsif (data_received = X"66") then --'f'
             next_state <= Sensor_check; 
+	    sendg <= '1';
           end  if; 
         end if;
       end if;
@@ -295,7 +296,7 @@ when Sensor_check=>
 
 if(mine_detect='1') then
       next_state<= Mine_send;
-elsif (turn = '0' and sendg = '1' and ((sensor_l = '1') or (sensor_r = '1') or (sensor_m='1')) and (unsigned(count_in) = 0)) then
+elsif (turn = '0' and sendg = '1' and ((sensor_l = '0') or (sensor_r = '0') or (sensor_m='0')) and (unsigned(count_in) = 0)) then
 	start_uart_transfer <= '1';
       	data_send <= X"67";
 	next_state <= sendg_reset;
@@ -309,8 +310,12 @@ else
     if(skipcrossing ='1') then
 	next_state <= Sensor_check;
 	if (sensor = "000") then
+	    skip_reset <= '1';
+	end if;
+	if(skip_reset = '1') then    
 		if((sensor_l = '1') or (sensor_r = '1') or (sensor_m='1')) then
-		skipcrossing <='0';
+			skipcrossing <='0';
+	    		skip_reset <= '0';
 		end if;
 	end if;
     else
