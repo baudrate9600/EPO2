@@ -34,7 +34,7 @@ end entity controller;
 
 
 architecture controller_behav of controller is
-type diff_states is (Startturn,Sensor_check,Check_point,sleft,sright,foward,wait_for_black, mine_send, Mine_check_point,backwards, t_send, sendg_reset); -- , mine_revert, t_revert
+type diff_states is (Startturn,Sensor_check,Check_point,sleft,sright,foward,wait_for_black, mine_send, Mine_check_point,backwards, t_send, sendg_reset, Start); -- , mine_revert, t_revert
 signal state, next_state: diff_states;
 signal sensor: std_logic_vector(2 downto 0); 
 signal mine : std_logic; -- using for being in state mine_detect.
@@ -45,7 +45,7 @@ signal pulse_counter : integer range 0 to 7;
 signal reset_l_motor, reset_r_motor: std_logic;
 signal start_uart_transfer : std_logic; 
 signal usart_state : std_logic;
-signal skipcrossing : std_logic;
+signal skipcrossing : std_logic := '0';
 signal sendg : std_logic;
 signal mine_reset : std_logic;
 signal turn : std_logic; -- 1 for 180 turn, 0 for backwards
@@ -59,6 +59,26 @@ sensor(0)<=sensor_r;
 ttl:process(sensor,state,mine_detect, internal_count_reset,new_pulse_counter,count_in)
   begin
 case state is
+when Start =>
+	skipcrossing <= '0';
+	next_state <= Sensor_check;
+
+
+when Mine_send =>
+--      read_data <= '0';
+	skipcrossing <= '0';
+	motor_l_direction <= '0';
+      	motor_r_direction <= '0';
+      	reset_l_motor <= '1';
+      	reset_r_motor <= '1';
+	if (unsigned(count_in) = 0) then
+      		start_uart_transfer <= '1';
+      		data_send <= X"6D";
+		next_state <= Mine_check_point;
+	else
+		next_state <= Mine_send;
+	end if;
+
   when Startturn =>
     skipcrossing <= '1';
     motor_l_direction <= '1';
@@ -67,6 +87,7 @@ case state is
     reset_r_motor <= '0';
     mine_reset <= '0';
     turn <= '1';
+    skip_reset <= '0';
 --    read_data <= '0';
     
     if(sensor="111") then
@@ -78,7 +99,7 @@ case state is
 
 --When the checkpoint has been reached wait until new_data arrives from the uart and then go foward 
 when Check_point => 
-
+    skipcrossing <= '0';
     if(new_data = '1') then
     	next_state <= foward;
 	pulse_counter <= 0; 
@@ -88,6 +109,7 @@ when Check_point =>
 
 --Go foward for 5 pulses then process the character that was sent from the uart 
 when foward => 
+      skipcrossing <= '0';
       motor_l_direction <= '1';
       motor_r_direction <= '0';
       reset_l_motor <= '0';
@@ -112,6 +134,7 @@ when foward =>
 
 when sleft => 
 --      read_data <= '1';
+      skipcrossing <= '0';
       motor_l_direction <= '0';
       motor_r_direction <= '0';
       reset_l_motor <= '0';
@@ -125,6 +148,7 @@ when sleft =>
 
 when sright => 
 --      read_data <= '1';
+      skipcrossing <= '0';
       motor_l_direction <= '1'; 
       motor_r_direction <= '1'; 
       reset_l_motor <= '0'; 
@@ -136,43 +160,8 @@ when sright =>
 	next_state <= sright;
       end if;
 
---when Mine_revert =>
---      motor_l_direction <= '0';
---      motor_r_direction <= '0';
---      reset_l_motor <= '1';
---      reset_r_motor <= '1';
---      if (unsigned(count_in) = 0) then
---		next_state <= Mine_send;
---      else
---		next_state <= Mine_revert;
---      end if;
-				
-when Mine_send =>
---      read_data <= '0';
-	motor_l_direction <= '0';
-      	motor_r_direction <= '0';
-      	reset_l_motor <= '1';
-      	reset_r_motor <= '1';
-	if (unsigned(count_in) = 0) then
-      		start_uart_transfer <= '1';
-      		data_send <= X"6D";
-		next_state <= Mine_check_point;
-	else
-		next_state <= Mine_send;
-	end if;
-
---when t_revert =>
---      motor_l_direction <= '0';
---      motor_r_direction <= '0';
---      reset_l_motor <= '1';
---      reset_r_motor <= '1';
---      if (unsigned(count_in) = 0) then
---		next_state <= t_send;
---      else
---		next_state <= t_revert;
---      end if;
-
 when t_send =>
+      skipcrossing <= '0';
       motor_l_direction <= '0';
       motor_r_direction <= '0';
       reset_l_motor <= '1';
@@ -183,6 +172,7 @@ when t_send =>
       next_state <= Mine_check_point;
 
 when Mine_check_point =>
+        skipcrossing <= '0';
 	start_uart_transfer <= '0';
 	if (data_received'event) then
       		if (data_received = X"6F") then    --'o' or 't' for challenge b
@@ -201,6 +191,7 @@ when Mine_check_point =>
 --Go backwards for 5 pulses then process the character that was sent from the uart 
 when backwards => 
 --      read_data <= '1';
+      skipcrossing <= '0';
       mine_reset <= '0';
       motor_l_direction <= '0';
       motor_r_direction <= '1';
@@ -334,7 +325,8 @@ begin
 if (reset='1') then
     count_reset <= '1';
     motorreset <= '1';
-    state<=Sensor_check;
+    state<=Start;
+--    skip_reset <= '1';
 --    skipcrossing <= '0';
 --    start_uart_transfer <= '0';
     elsif (clk'event and clk='1') then
