@@ -17,16 +17,26 @@ entity uart_tx is
 end uart_tx ;
 
 architecture arch of uart_tx is
-   constant DBIT: integer:=8; -- number of data bits
+   constant DBIT: integer:=9; -- number of data bits
    constant SB_TICK: integer:=16;  -- numbner of stop bit ticks
 
    type state_type is (idle, start, data, stop);
    signal state_reg, state_next: state_type;
    signal s_reg, s_next: unsigned(3 downto 0); -- sampling tick counter
-   signal n_reg, n_next: unsigned(2 downto 0); -- data bit counter
-   signal b_reg, b_next: std_logic_vector(7 downto 0); -- data register
+   signal n_reg, n_next: unsigned(3 downto 0); -- data bit counter
+   signal b_reg, b_next: std_logic_vector(8 downto 0); -- data register
    signal tx_reg, tx_next: std_logic; -- bit stream flip-flop
+   signal parity_bit : std_logic;
+   signal parity_vec : std_logic_vector(8 downto 0);
+   component parity is 
+		port(
+			data_in    : in std_logic_vector(8 downto 0); 
+			data_error : out std_logic
+			);
+	end component parity; 
 begin
+   parity_vec <= din & '0';
+   U0: parity port map(data_in => parity_vec, data_error => parity_bit); 
    -- FSMD state & data registers
    process(clk,reset)
    begin
@@ -46,7 +56,7 @@ begin
    end process;
    -- next-state logic & data path functional units/routing
    process(state_reg, s_reg, n_reg, b_reg, s_tick,
-           tx_reg, tx_start, din)
+           tx_reg, tx_start, din,parity_bit)
    begin
       state_next <= state_reg; -- default values
       s_next <= s_reg;
@@ -60,7 +70,7 @@ begin
             if tx_start='1' then -- transmission can start
                state_next <= start;
                s_next <= (others=>'0');
-               b_next <= din;
+               b_next <=  parity_bit &din ; --parity bit is MSB
             end if;
          when start =>
             tx_next <= '0'; -- output in START bit
@@ -78,7 +88,7 @@ begin
             if (s_tick = '1') then
                if s_reg=15 then -- end of DATA bit reached
                   s_next <= (others=>'0');
-                  b_next <= '0' & b_reg(7 downto 1); -- data register shifted
+                  b_next <= '0' & b_reg(8 downto 1); -- data register shifted
                   if n_reg=(DBIT-1) then -- last DATA bit reached
                      state_next <= stop ;
                   else

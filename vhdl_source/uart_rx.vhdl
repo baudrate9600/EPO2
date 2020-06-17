@@ -58,7 +58,7 @@ begin
       end if;
    end process;
    -- next-state logic & data path functional units/routing
-   process(state_reg, s_reg, n_reg, b_reg, s_tick, rx)
+   process(state_reg, s_reg, n_reg, b_reg,p_reg, s_tick, rx)
    begin
       state_next <= state_reg; -- default values
       s_next <= s_reg;
