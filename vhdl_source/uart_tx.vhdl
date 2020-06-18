@@ -35,7 +35,7 @@ architecture arch of uart_tx is
 			);
 	end component parity; 
 begin
-   parity_vec <= din & '0';
+   parity_vec <= din & '0'; --Generates the parity bit 
    U0: parity port map(data_in => parity_vec, data_error => parity_bit); 
    -- FSMD state & data registers
    process(clk,reset)
